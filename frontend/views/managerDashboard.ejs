@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #34000b;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .navbar li {
+            display: inline;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #5e0000;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            background-color: #34000b;
+            color: white;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        a.button {
+            display: inline-block;
+            margin: 15px 0;
+            padding: 10px 20px;
+            background-color: #34000b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        a.button:hover {
+            background-color: #5e0000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #34000b;
+            color: white;
+        }
+        .approve-btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .approve-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .reject-btn {
+            background-color: #f44336; /* Red */
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .reject-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #34000b;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .remove-btn {
+            background-color: #34000b;
+        }
+
+        .remove-btn:hover {
+            background-color: #5e0000;
+        }
+
+        h2 {
+            color: #34000b;
+            margin-bottom: 15px;
+        }
+
+        #assignTaskForm {
+            display: grid;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #c29b87;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #assignTaskForm label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        #assignTaskForm input,
+        #assignTaskForm select,
+        #assignTaskForm textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        #assignTaskForm button {
+            background-color: #34000b;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #assignTaskForm button:hover {
+            background-color: #5e0000;
+        }
+
+        .assigned-tasks-table {
+            margin-top: 30px;
+        }
+
+        .assigned-tasks-table td, 
+        .assigned-tasks-table th {
+            padding: 12px;
+        }
+
+        .assigned-tasks-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .assigned-tasks-table tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        /* Review Form Styling */
+        #reviewFormContainer {
+    display: none;
+    background-color: #c29b87;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+#reviewFormContainer label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#reviewFormContainer input,
+#reviewFormContainer textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+/* Add right padding for the textarea */
+#reviewFormContainer textarea {
+    padding-right: 20px; /* Adds space between the text and right edge */
+}
+
+#reviewFormContainer button {
+    background-color: #34000b;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#reviewFormContainer button:hover {
+    background-color: #5e0000;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="#allEmployees">All Employees</a></li>
+            <li><a href="#myTeam">My Team</a></li>
+            <li><a href="#assignTask">Assign Task</a></li>
+            <li><a href="#assignedTasks">Assigned Tasks</a></li>
+            <li><a href="#employeePerformance">Employee Performance</a></li>
+            <li><a href="#leaveApprovals">Leave Approvals</a></li> 
+
+        </ul>
+    </nav>
+
+    <div class="container">
+        <% if (manager) { %>
+            <h1>Welcome, <%= manager.name %> (Manager)</h1>
+            <p>Email: <%= manager.email %></p>
+        <% } else { %>
+            <h1>Manager Dashboard</h1>
+            <p>Error: Manager data not found.</p>
+        <% } %>
+
+        <a class="button" href="/manager/logout">Logout</a>
+
+        <!-- Add Team Section -->
+        <h2 id="allEmployees">All Employees</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="employeeList">
+                <% if (employees && employees.length > 0) { %>
+                    <% employees.forEach(employee => { %>
+                        <tr>
+                            <td><%= employee.name %></td>
+                            <td><%= employee.email %></td>
+                            <td>
+                                <button onclick="addToTeam('<%= employee._id %>', '<%= employee.name %>', '<%= employee.email %>')">
+                                    Add to My Team
+                                </button>
+                                <button onclick="addReviewForm('<%= employee._id %>', '<%= employee.name %>')">Add Review</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="3">No employees found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <!-- Review Form -->
+        <div id="reviewFormContainer">
+            <h2>Submit Review</h2>
+            <form id="reviewForm">
+                <label for="tasksCompleted">Tasks Completed:</label>
+                <input type="number" id="tasksCompleted" required><br>
+
+                <label for="averageRating">Average Rating (1-5):</label>
+                <input type="number" id="averageRating" min="1" max="5" required><br>
+
+                <label for="remarks">Remarks:</label>
+                <textarea id="remarks" required></textarea><br>
+
+                <button type="submit">Submit Review</button>
+                <button type="button" onclick="cancelReview()">Cancel</button>
+            </form>
+        </div>
+
+        
+
+        <!-- My Team Section -->
+        <h2 id="myTeam">My Team</h2>
+        <table id="myTeamTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="myTeamList">
+                <!-- Dynamically filled by JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Task Assignment Section -->
+        <h2 id="assignTask">Assign Task</h2>
+        <form id="assignTaskForm">
+            <label for="employee">Select Employee:</label>
+            <select id="employee" required>
+                <% employees.forEach(employee => { %>
+                    <option value="<%= employee._id %>"><%= employee.name %></option>
+                <% }) %>
+            </select><br>
+
+            <label for="title">Task Title:</label>
+            <input type="text" id="title" required><br>
+
+            <label for="description">Description:</label>
+            <textarea id="description" required></textarea><br>
+
+            <label for="deadline">Deadline:</label>
+            <input type="datetime-local" id="deadline" required><br>
+
+            <button type="submit">Assign Task</button>
+        </form>
+
+        <h2 id="assignedTasks">Assigned Tasks</h2>
+        <table class="assigned-tasks-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="taskList"></tbody>
+        </table>
+
+        <!-- Performance Table -->
+        <h2 id="employeePerformance">Employee Performance</h2>
+        <table class="assigned-tasks-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Tasks Completed</th>
+                    <th>Average Rating</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="performanceList"></tbody>
+        </table>
+
+        <!-- Add this section after the Performance Table -->
+<h2 id="leaveApprovals">Leave Approvals</h2>
+<table class="assigned-tasks-table">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="leaveApprovalList"></tbody>
+</table>
+
+        
+
+    </div>
+
+    <script>
+        
+        function loadMyTeam() {
+            let myTeam = JSON.parse(localStorage.getItem("myTeam")) || [];
+            const teamList = document.getElementById("myTeamList");
+            teamList.innerHTML = "";
+
+            myTeam.forEach(employee => {
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${employee.name}</td>
+                    <td>${employee.email}</td>
+                    <td><button class="remove-btn" onclick="removeFromTeam('${employee._id}')">Remove</button></td>
+                `;
+                teamList.appendChild(row);
+            });
+        }
+
+        function addToTeam(employeeId, name, email) {
+            let myTeam = JSON.parse(localStorage.getItem("myTeam")) || [];
+            if (myTeam.some(emp => emp._id === employeeId)) {
+                alert("Employee is already in your team!");
+                return;
+            }
+            myTeam.push({ _id: employeeId, name, email });
+            localStorage.setItem("myTeam", JSON.stringify(myTeam));
+            loadMyTeam();
+        }
+
+        function removeFromTeam(employeeId) {
+            let myTeam = JSON.parse(localStorage.getItem("myTeam")) || [];
+            myTeam = myTeam.filter(emp => emp._id !== employeeId);
+            localStorage.setItem("myTeam", JSON.stringify(myTeam));
+            loadMyTeam();
+        }
+        function addReviewForm(employeeId, name) {
+            currentEmployeeId = employeeId;
+            currentEmployeeName = name;
+            document.getElementById("reviewFormContainer").style.display = 'block';
+        }
+
+        function cancelReview() {
+            document.getElementById("reviewFormContainer").style.display = 'none';
+        }
+
+        document.getElementById('reviewForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const tasksCompleted = document.getElementById("tasksCompleted").value;
+            const averageRating = document.getElementById("averageRating").value;
+            const remarks = document.getElementById("remarks").value;
+
+            let performanceData = JSON.parse(localStorage.getItem('employeePerformance')) || [];
+
+            performanceData.push({
+                employeeId: currentEmployeeId,
+                name: currentEmployeeName,
+                tasksCompleted: tasksCompleted,
+                averageRating: averageRating,
+                remarks: remarks
+            });
+
+            localStorage.setItem('employeePerformance', JSON.stringify(performanceData));
+
+            document.getElementById("reviewFormContainer").style.display = 'none';
+            loadPerformanceData();
+        });
+
+        function loadPerformanceData() {
+            const performanceList = document.getElementById("performanceList");
+            const performanceData = JSON.parse(localStorage.getItem('employeePerformance')) || [];
+
+            performanceList.innerHTML = '';
+            performanceData.forEach(performance => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${performance.name}</td>
+                    <td>${performance.tasksCompleted}</td>
+                    <td>${performance.averageRating}</td>
+                    <td>${performance.remarks}</td>
+                `;
+                performanceList.appendChild(row);
+            });
+        }
+
+
+        function loadTasks() {
+            const employeeId = document.getElementById('employee').value;
+            fetch(`/manager/tasks/${employeeId}`)
+                .then(response => response.json())
+                .then(tasks => {
+                    const taskList = document.getElementById('taskList');
+                    taskList.innerHTML = '';
+
+                    tasks.forEach(task => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${task.employeeId.name}</td>
+                            <td>${task.title}</td>
+                            <td>${task.description}</td>
+                            <td>${new Date(task.deadline).toLocaleString()}</td>
+                            <td>${task.status}</td>
+                        `;
+                        taskList.appendChild(row);
+                    });
+                });
+        }
+
+        document.getElementById('assignTaskForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const employeeId = document.getElementById('employee').value;
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const deadline = document.getElementById('deadline').value;
+
+            fetch('/manager/assignTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ employeeId, title, description, deadline }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+
+                    const taskList = document.getElementById('taskList');
+                    const newTaskRow = document.createElement('tr');
+                    newTaskRow.innerHTML = `
+                        <td>${data.employeeName}</td>
+                        <td>${data.task.title}</td>
+                        <td>${data.task.description}</td>
+                        <td>${data.task.deadline}</td>
+                        <td>${data.task.status}</td>
+                    `;
+                    taskList.appendChild(newTaskRow);
+
+                    document.getElementById('assignTaskForm').reset();
+                }
+            });
+        });
+        
+// Add these functions to your existing script
+function loadLeaveRequests() {
+    fetch('/manager/getLeaveRequests')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Leave requests data:", data);
+            const leaveList = document.getElementById('leaveApprovalList');
+            leaveList.innerHTML = '';
+
+            if (data.leaves && data.leaves.length > 0) {
+                data.leaves.forEach(leave => {
+                    // Ensure status is never undefined
+                    const status = leave.status || 'Pending';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${leave.employeeName || leave.email}</td>
+                        <td>${new Date(leave.startDate).toLocaleDateString()}</td>
+                        <td>${new Date(leave.endDate).toLocaleDateString()}</td>
+                        <td>${leave.reason || 'No reason provided'}</td>
+                        <td>${status}</td>
+                        <td>
+                            ${status === 'Pending' ? `
+                                <button class="approve-btn" onclick="approveLeave('${leave._id}')">Approve</button>
+                                <button class="reject-btn" onclick="rejectLeave('${leave._id}')">Reject</button>
+                            ` : 'Action completed'}
+                        </td>
+                    `;
+                    leaveList.appendChild(row);
+                });
+            } else {
+                leaveList.innerHTML = '<tr><td colspan="6">No leave requests found</td></tr>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading leave requests:', error);
+            const leaveList = document.getElementById('leaveApprovalList');
+            leaveList.innerHTML = '<tr><td colspan="6">Error loading leave requests</td></tr>';
+        });
+}
+function approveLeave(leaveId) {
+    updateLeaveStatus(leaveId, 'Approved');
+}
+
+function rejectLeave(leaveId) {
+    updateLeaveStatus(leaveId, 'Rejected');
+}
+
+function updateLeaveStatus(leaveId, status) {
+    fetch('/manager/updateLeaveStatus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ leaveId, status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Leave ${status.toLowerCase()} successfully`);
+            loadLeaveRequests();
+        } else {
+            alert('Error updating leave status');
+        }
+    });
+}
+
+// Add this to your DOMContentLoaded event listener
+document.addEventListener("DOMContentLoaded", function() {
+    loadTasks();
+    loadMyTeam();
+    loadPerformanceData();
+    loadLeaveRequests(); // Add this line
+});
+
+    </script>
+</body>
+</html>
